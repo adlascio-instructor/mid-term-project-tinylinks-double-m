@@ -1,7 +1,1 @@
-{
-  "gjiodgioasf": {
-    "id": "gjiodgioasf",
-    "email": "test@test.com",
-    "password": "1234"
-  }
-}
+{"50ee59e4-3860-11ed-a261-0242ac120002":{"id":"50ee59e4-3860-11ed-a261-0242ac120002","email":"mauricio@test.com","password":"$2y$12$7jPwJr8dO3GJbhqtmzl9oeKlgJZLAUSWmAJu.FsDbG6RZ3ZK5od8i","name":"Mauricio"},"62a93bb5-c35d-4ed2-ab4b-b27f3873e496":{"id":"62a93bb5-c35d-4ed2-ab4b-b27f3873e496","email":"meg@akama.com","password":"$2b$12$3fgHqt1mMGHDYXFzvxfVpuQwJFQz2DwVmxavbpKnClfT06sNL6YRm","name":"Megumi"},"88da7417-4b65-4cad-bf8e-9aa6f877bd97":{"id":"88da7417-4b65-4cad-bf8e-9aa6f877bd97","email":"yuto@mail.com","password":"$2b$12$qZSQeh2Jzz0twTYyCtYIOuKNl2A.jjWE149Z90xPfv9lce52d8bmm","name":"Yuto"}}

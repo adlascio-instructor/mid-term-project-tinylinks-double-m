@@ -5,7 +5,8 @@ const authRoute = require('./routes/auth');
 const urlsRoute = require('./routes/urls');
 
 const app = express();
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(
   cookieSession({
     name: "session",
