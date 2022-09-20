@@ -1,13 +1,15 @@
 const express = require('express');
 const router = express.Router();
-// let isLogIn = true; //Test purpose (delete this line later)
-let isLogIn = false; //Test purpose (delete this line later)
+const fs = require('fs');
+const urls = require('../models/urls.json');
+const randomstring = require("randomstring");
+let isLogIn = true; //Test purpose (delete this line later)
+// let isLogIn = false; //Test purpose (delete this line later)
 // let idExist = true; //Test purpose (delete this line later)
 let idExist = false; //Test purpose (delete this line later)
 // let hasURL = true; //Test purpose (delete this line later)
 let hasURL = false; //Test purpose (delete this line later)
 
-//localhost:3000/urls
 router.get('/', (req, res) => {
   if (isLogIn) { //if logged in
     res.render('urls');
@@ -44,12 +46,17 @@ router.get('/u/:id', (req, res) => {
   }
 });
 
-// router.post('/', (req, res) => {
-//   if (isLogIn) {
-//     console.log("Login");
-//   } else {
-//     res.render('error', {Error:"You need to log-in first!"});
-//   }
-// })
+router.post('/', (req, res) => {
+  if (isLogIn) {
+    const id = randomstring.generate(6);
+    // const urlsObj = { shortUrl: id, longUrl: req.body.longUrl, userId: req.session.userid }
+    urls[id] = {
+      shortUrl: id, longUrl: req.body.longUrl, userId: req.session.userid
+    };
+    res.send("Id shortened")
+  } else {
+    res.render('error', { Error:"You need to log-in first!" });
+  }
+})
 
 module.exports = router;
