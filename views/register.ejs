@@ -19,12 +19,9 @@
   </head>
 
   <body>
+    <%- include('partials/header', { loggedUser: undefined }) %>
     <main style="margin: 1em">
-      <% if (error) { %> 
-        <div class="alert alert-danger" role="alert">
-          <%= error %>
-        </div>
-      <% } %>
+      <%- include('partials/errorMessage') %>
       <form action="/auth/register" method="post">
         <div>
           <label for="name">Name</label>

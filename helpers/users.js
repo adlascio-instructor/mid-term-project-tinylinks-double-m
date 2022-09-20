@@ -23,15 +23,42 @@ function createUser(newUser) {
     }
 }
 
+async function verifyUserCredentials(email, password) {
+    const users = getAllUsers();
+    const foundUser = users.find(u => u.email === email);
+    if (foundUser && await bcrypt.compare(password, foundUser.password)) {
+        return foundUser;
+    } else {
+        return false;
+    }
+}
+
+function getLoggedUser(userid) {
+    if (!userid) {
+        return undefined;
+    }
+
+    let user = undefined;
+
+    const fileContent = fs.readFileSync(filePath, 'utf8');
+    if (fileContent) {
+        user = JSON.parse(fileContent)[userid];
+    }
+
+    return user;
+}
+
 const hashPassword = async (password) => {
     const saltRounds = 12;
     const salt = await bcrypt.genSalt(saltRounds);
     const hash = await bcrypt.hash(password, salt);
     return hash;
-  };
+};
 
 module.exports = {
     getAllUsers,
     createUser,
     hashPassword,
+    verifyUserCredentials,
+    getLoggedUser,
 };
