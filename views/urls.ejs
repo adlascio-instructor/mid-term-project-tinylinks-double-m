@@ -17,7 +17,7 @@
     <title>TinyLinks</title>
   </head>
   <body>
-    <%- include('partials/header')%>
+    <%- include('partials/header', {loggedUser})%>
     <main style="margin: 1em">
       <h3>My URLs</h3>
       <table class="table">
@@ -30,18 +30,14 @@
           </tr>
         </thead>
         <tbody>
+          <% urlsArr.map((url) => { %>
           <tr>
-            <th scope="row">1</th>
-            <td>https://www.google.com</td>
-            <td><a href="/urls/1/edit">Edit</a></td>
-            <td><a href="/urls/1/delete">Delete</a></td>
+              <th scope="row"><%= url.shortUrl %></th>
+              <td><%= url.longUrl %></td>
+              <td><a class="btn btn-primary" href="/urls/<%=url.userId%>/edit">Edit</a></td>
+              <td><a class="btn btn-danger" href="/urls/<%=url.userId%>/delete">Delete</a></td>
           </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>https://www.facebook.com</td>
-            <td><a class="btn btn-primary">Edit</a></td>
-            <td><button class="btn btn-danger">Delete</button></td>
-          </tr>
+          <% }) %>
         </tbody>
       </table>
     </main>
