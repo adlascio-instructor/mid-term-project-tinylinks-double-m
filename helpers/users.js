@@ -1,31 +1,22 @@
 const fs = require('fs');
 const bcrypt = require("bcrypt");
 const { getFilePath } = require('./file');
+const users = require('../models/users.json');
 
 const filePath = getFilePath('/models/users.json');
 
 function getAllUsers() {
-    let users = [];
-    const fileContent = fs.readFileSync(filePath, 'utf8');
-    if (fileContent) {
-        users = Object.values(JSON.parse(fileContent));
-    }
-    return users;
+    return Object.values(users);
 }
 
 function createUser(newUser) {
-    const fileContent = fs.readFileSync(filePath, 'utf8');
-    if (fileContent) {
-        const userObj = JSON.parse(fileContent);
-        userObj[newUser.id] = newUser;
-        const newFileContent = JSON.stringify(userObj);
-        fs.writeFileSync(filePath, newFileContent);
-    }
+    users[newUser.id] = newUser;
+    const newFileContent = JSON.stringify(users);
+    fs.writeFileSync(filePath, newFileContent);
 }
 
 async function verifyUserCredentials(email, password) {
-    const users = getAllUsers();
-    const foundUser = users.find(u => u.email === email);
+    const foundUser = getAllUsers().find(u => u.email === email);
     if (foundUser && await bcrypt.compare(password, foundUser.password)) {
         return foundUser;
     } else {
@@ -37,15 +28,7 @@ function getLoggedUser(userid) {
     if (!userid) {
         return undefined;
     }
-
-    let user = undefined;
-
-    const fileContent = fs.readFileSync(filePath, 'utf8');
-    if (fileContent) {
-        user = JSON.parse(fileContent)[userid];
-    }
-
-    return user;
+    return users[userid];
 }
 
 const hashPassword = async (password) => {
