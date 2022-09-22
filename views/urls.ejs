@@ -32,7 +32,9 @@
           <tbody>
             <% newUrlsArr.map((url) => { %>
             <tr>
-              <th scope="row"><%= url.shortUrl %></th>
+              <th scope="row">
+                <a href="/urls/u/<%= url.shortUrl %>" target="_blank"><%= url.shortUrl %></a>
+              </th>
               <td><%= url.longUrl %></td>
               <td>
                 <a class="btn btn-primary" href="/urls/<%= url.shortUrl %>"
