@@ -5,12 +5,20 @@ const urls  = require('../models/urls.json');
 const { getLoggedUser } = require('../helpers/users');
 const { getFilePath } = require('../helpers/file');
 const randomstring = require("randomstring");
+const { url } = require('inspector');
 
 router.get('/', (req, res) => {
   const loggedUser = getLoggedUser(req.session.userid);
-  const urlsArr = Object.values(urls);
   if (loggedUser) { //if logged in
-    res.render('urls', { loggedUser, urlsArr });
+    const urlsArr = Object.values(urls);
+    const newUrlsArr = [];
+    urlsArr.map(url => {
+      if (loggedUser.id === url.userId) {
+        //create new array which only belongs to one user 
+        newUrlsArr.push(url);
+      }
+    })
+    res.render('urls', { loggedUser, urlsArr, newUrlsArr });
   } else { //if not logged in
     res.render('error', {Error:"You need to log-in first!", loggedUser});
   }
@@ -27,23 +35,26 @@ router.get('/new', (req, res) => {
 
 router.get('/:id', (req, res) => {
   const loggedUser = getLoggedUser(req.session.userid);
-  if (isLogIn && idExist && hasURL) {
-    res.render('singleUrl');
-  } else if (!idExist) {
-    res.render('error', {Error:"ID doesn't exist.", loggedUser}); 
-  } else if (!isLogIn) {
+  if (!loggedUser) {
     res.render('error', {Error:"You need to log-in first!", loggedUser});
-  } else if (isLogIn && idExist && !hasURL) { 
-    res.render('error', {Error:"You have't registered URLs yet.", loggedUser}); 
+  } else if (!urls[req.params.id]) {
+    res.render('error', {Error:"ID doesn't exist.", loggedUser}); 
+  } else if (loggedUser.id !== urls[req.params.id].userId) {
+    res.render('error', {Error:"You don't have access to this url.", loggedUser});
+  } else {
+    res.render('singleUrl', { loggedUser, url:urls[req.params.id] });
   }
 });
 
 router.get('/u/:id', (req, res) => {
-  if (idExist) {
-    res.redirect(''); //corresponding long url
-  } else {
-    res.render('error', {Error:"ID doesn't exist."});
-  }
+  const loggedUser = getLoggedUser(req.session.userid);
+  const urlsArr = Object.values(urls);
+  urlsArr.map(url => {
+    if (req.params.id === url.shortUrl) {
+      res.redirect(url.longUrl); 
+    } 
+  })
+  res.render('error', { Error:"ID doesn't exist.", loggedUser });
 });
 
 router.post('/', (req, res) => {
@@ -53,7 +64,6 @@ router.post('/', (req, res) => {
     urls[id] = {
       shortUrl: id, longUrl: req.body.longURL, userId: req.session.userid
     };
-    console.log(urls);
     fs.writeFileSync(getFilePath('/models/urls.json'),  JSON.stringify(urls));
     res.redirect(`/urls/${id}`);
   } else {
@@ -61,12 +71,46 @@ router.post('/', (req, res) => {
   }
 })
 
-// router.post('/:id', (req, res) => {
+router.post('/:id', (req, res) => {
+  const loggedUser = getLoggedUser(req.session.userid);
+  if (!loggedUser) {
+    res.render('error', {Error:"You need to log-in first!", loggedUser});
+  } else if (!urls[req.params.id]) {
+    res.render('error', {Error:"ID doesn't exist.", loggedUser}); 
+  } else if (loggedUser.id !== urls[req.params.id].userId) {
+    res.render('error', {Error:"You don't have access to this url.", loggedUser});
+  } else {
+    const newUrl = req.body.longURL;
+    urls[req.params.id] = {
+      ...urls[req.params.id], longUrl: newUrl
+    }
+    fs.writeFileSync(getFilePath('/models/urls.json'),  JSON.stringify(urls));
+    res.redirect('/urls');
+  }
+})
 
-// })
+router.post('/:id/delete', async (req, res) => {
+  const loggedUser = getLoggedUser(req.session.userid);
+  const urlsArr = Object.values(urls);
+  let updateArr;
+  console.log(urls);
 
-// router.post('/:id/delete', (req, res) => {
-  
-// })
+  if (!loggedUser) {
+    res.render('error', {Error:"You need to log-in first!", loggedUser});
+  } else if (!urls[req.params.id]) {
+    res.render('error', {Error:"ID doesn't exist.", loggedUser}); 
+  } else if (loggedUser.id !== urls[req.params.id].userId) {
+    res.render('error', {Error:"You don't have access to this url.", loggedUser});
+  } else 
+  {
+    updateArr = urlsArr.filter(url => req.params.id !== url.shortUrl);
+    const newUrlsObj = {};
+    updateArr.map(url => {
+      newUrlsObj[url.shortUrl] = url;
+    })
+    fs.writeFileSync(getFilePath('/models/urls.json'),  JSON.stringify(newUrlsObj)); 
+    res.redirect('/urls');
+  }
+})
 
 module.exports = router;
