@@ -20,26 +20,38 @@
     <%- include('partials/header', {loggedUser})%>
     <main style="margin: 1em">
       <h3>My URLs</h3>
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">Short URL ID</th>
-            <th scope="col">Long URL</th>
-            <th scope="col">Edit</th>
-            <th scope="col">Delete</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% urlsArr.map((url) => { %>
-          <tr>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Short URL ID</th>
+              <th scope="col">Long URL</th>
+              <th scope="col">Edit</th>
+              <th scope="col">Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% newUrlsArr.map((url) => { %>
+            <tr>
               <th scope="row"><%= url.shortUrl %></th>
               <td><%= url.longUrl %></td>
-              <td><a class="btn btn-primary" href="/urls/<%=url.userId%>/edit">Edit</a></td>
-              <td><a class="btn btn-danger" href="/urls/<%=url.userId%>/delete">Delete</a></td>
-          </tr>
-          <% }) %>
-        </tbody>
-      </table>
+              <td>
+                <a class="btn btn-primary" href="/urls/<%= url.shortUrl %>"
+                  >Edit</a
+                >
+              </td>
+              <td>
+                <form method="post" action="/urls/<%= url.shortUrl %>/delete">
+                <button
+                  class="btn btn-danger"
+                  type="submit"
+                  >Delete</button
+                >
+               </form>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
     </main>
     <!-- Bootstrap JS -->
     <script
