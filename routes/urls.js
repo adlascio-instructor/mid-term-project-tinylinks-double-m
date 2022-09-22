@@ -5,7 +5,6 @@ const urls  = require('../models/urls.json');
 const { getLoggedUser } = require('../helpers/users');
 const { getFilePath } = require('../helpers/file');
 const randomstring = require("randomstring");
-const { url } = require('inspector');
 
 router.get('/', (req, res) => {
   const loggedUser = getLoggedUser(req.session.userid);
